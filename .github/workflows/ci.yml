@@ -88,6 +88,8 @@ jobs:
 
       - name: Build, Test, and Deploy to Block SaaS Artifactory
         run: |
+          set -ex
+
           # Set newly resolved version in POM config
           mvn \
             versions:set \
@@ -95,6 +97,7 @@ jobs:
             -DnewVersion=${{ steps.resolve_version.outputs.resolved_version }}
 
           export ARTIFACTORY_PASSWORD="$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq -r .value)"
+
           # Maven deploy lifecycle will build, run tests, verify, sign, and deploy
           mvn deploy --batch-mode --settings .maven_settings.xml -P sign-artifacts
         env:
