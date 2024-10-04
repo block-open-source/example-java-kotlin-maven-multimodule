@@ -97,7 +97,7 @@ jobs:
             -DnewVersion=${{ steps.resolve_version.outputs.resolved_version }}
 
           GITHUB_ID_TOKEN="$(curl -sLS -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=jfrog-github" | jq -r .value)"
-          export ARTIFACTORY_PASSWORD="$(curl -H "Content-Type: application/json" "https://blockxyz.jfrog.io/access/api/v1/oidc/token" -d "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:access_token\", \"subject_token\": \"${GITHUB_ID_TOKEN}\", \"provider_name\": \"github-oidc\"}" | jq -r .access_token)"
+          export ARTIFACTORY_PASSWORD="$(curl -H "Content-Type: application/json" "https://blockxyz.jfrog.io/access/api/v1/oidc/token" -d "{\"grant_type\": \"urn:ietf:params:oauth:grant-type:token-exchange\", \"subject_token_type\":\"urn:ietf:params:oauth:token-type:id_token\", \"subject_token\": \"${GITHUB_ID_TOKEN}\", \"provider_name\": \"github-oidc\"}" | jq -r .access_token)"
 
           # Maven deploy lifecycle will build, run tests, verify, sign, and deploy
           mvn deploy --batch-mode --settings .maven_settings.xml -P sign-artifacts
